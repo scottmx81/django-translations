@@ -26,6 +26,7 @@ def _fetch_translations_query_getter(model, lang):
         children = list(args) + sorted(kwargs.items())
 
         for index, child in enumerate(children):
+            q = None
             if isinstance(child, tuple):
                 dissected = _get_dissected_lookup(model, child[0])
                 if dissected['translatable']:
@@ -93,7 +94,8 @@ def _fetch_translations_query_getter(model, lang):
                     _connector=child.connector,
                     _negated=child.negated
                 )
-            children[index] = q
+            if q:
+                children[index] = q
 
         query = Q(*children, _connector=connector, _negated=negated)
 
